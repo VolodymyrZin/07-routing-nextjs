@@ -14,6 +14,7 @@ export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   search?: string;
+  tag?: string;
 }
 axios.defaults.baseURL = 'https://notehub-public.goit.study/api';
 axios.defaults.headers.common['Authorization'] =
@@ -23,9 +24,15 @@ export async function fetchNotes({
   page = 1,
   perPage = 12,
   search = '',
+  tag,
 }: FetchNotesParams): Promise<FetchNotesResponse> {
   const { data } = await axios.get<FetchNotesResponse>('/notes', {
-    params: { page, perPage, search: search || undefined },
+    params: {
+      page,
+      perPage,
+      search: search || undefined,
+      tag: tag && tag !== 'all' ? tag : undefined,
+    },
   });
   return data;
 }

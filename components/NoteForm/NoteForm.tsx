@@ -1,3 +1,5 @@
+'use client';
+
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import type { FormikHelpers } from 'formik';
@@ -11,23 +13,26 @@ interface NewNote {
   content: string;
   tag: string;
 }
+
 interface NoteFormProps {
   onCancel: () => void;
   note?: Note | null;
 }
+
 export default function NoteForm({ onCancel }: NoteFormProps) {
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       onCancel();
-      console.log('Note added successfully');
     },
     onError: error => {
       console.error('Failed to create note:', error);
     },
   });
+
   const NoteSchema = Yup.object().shape({
     title: Yup.string().max(50).min(3).required(),
     content: Yup.string().max(500).optional(),
@@ -44,7 +49,9 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
 
   const handleSubmit = (values: NewNote, actions: FormikHelpers<NewNote>) => {
     mutation.mutate(values, {
-      onSuccess: () => actions.resetForm(),
+      onSuccess: () => {
+        actions.resetForm();
+      },
     });
   };
 
