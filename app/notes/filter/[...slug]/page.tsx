@@ -32,7 +32,7 @@ export default function NotesPage({ params }: Props) {
         </h2>
 
         <Link href="/notes/action/create" className={css.button}>
-          + Create Note
+          Create Note
         </Link>
       </div>
 
