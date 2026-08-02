@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal/Modal';
-import NotePreviewClient from '../NotePreview.client';
+import NotePreviewClient from './NotePreview.client';
 
 export default function NotePreviewModal() {
   const router = useRouter();
