@@ -2,7 +2,6 @@
 
 import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
 import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import css from './NotesPage.module.css';
@@ -24,7 +23,7 @@ export default function NotesPage({ params }: Props) {
 
   return (
     <div className={css.app}>
-      <div className={css.toolbar}>
+      {/* <div className={css.toolbar}>
         <h2>
           {tagFromUrl && tagFromUrl !== 'all'
             ? `Tag: ${tagFromUrl}`
@@ -34,7 +33,7 @@ export default function NotesPage({ params }: Props) {
         <Link href="/notes/action/create" className={css.button}>
           Create Note
         </Link>
-      </div>
+      </div> */}
 
       {isLoading && <p>Loading notes...</p>}
       {isError && <p>Failed to load notes.</p>}
