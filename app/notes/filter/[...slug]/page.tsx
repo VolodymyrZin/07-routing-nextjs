@@ -1,48 +1,30 @@
-'use client';
-
-import { use } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
-import NoteList from '@/components/NoteList/NoteList';
-import css from './NotesPage.module.css';
+import NotesClient from './Notes.client';
 
-type Props = {
+interface Props {
   params: Promise<{ slug: string[] }>;
-};
+}
 
-export default function NotesPage({ params }: Props) {
-  const { slug } = use(params);
+export default async function Page({ params }: Props) {
+  const { slug } = await params;
 
-  const tagFromUrl = slug ? slug[0] : undefined;
-  const currentTag = tagFromUrl === 'all' ? undefined : tagFromUrl;
+  const tag = slug?.[0] === 'all' ? undefined : slug?.[0];
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['notes', currentTag],
-    queryFn: () => fetchNotes({ tag: currentTag }),
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['notes', tag],
+    queryFn: () => fetchNotes({ tag }),
   });
 
   return (
-    <div className={css.app}>
-      {/* <div className={css.toolbar}>
-        <h2>
-          {tagFromUrl && tagFromUrl !== 'all'
-            ? `Tag: ${tagFromUrl}`
-            : 'All Notes'}
-        </h2>
-
-        <Link href="/notes/action/create" className={css.button}>
-          Create Note
-        </Link>
-      </div> */}
-
-      {isLoading && <p>Loading notes...</p>}
-      {isError && <p>Failed to load notes.</p>}
-
-      {data?.notes && data.notes.length > 0 ? (
-        <NoteList notes={data.notes} />
-      ) : (
-        !isLoading && <p>No notes found for this tag.</p>
-      )}
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotesClient params={params} />
+    </HydrationBoundary>
   );
 }
