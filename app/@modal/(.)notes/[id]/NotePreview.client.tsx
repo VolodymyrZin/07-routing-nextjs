@@ -1,5 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
+import Modal from '@/components/Modal/Modal';
 import NotePreview from '@/components/NotePreview/NotePreview';
 
 interface NotePreviewClientProps {
@@ -7,5 +10,11 @@ interface NotePreviewClientProps {
 }
 
 export default function NotePreviewClient({ id }: NotePreviewClientProps) {
-  return <NotePreview id={id} />;
+  const router = useRouter();
+
+  return (
+    <Modal onClose={() => router.back()}>
+      <NotePreview id={id} />
+    </Modal>
+  );
 }
